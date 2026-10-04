@@ -9,7 +9,7 @@ const cartSchema = new mongoose.Schema(
     },
     books: [
       {
-        bookId: {
+        book: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Book",
         },
@@ -27,13 +27,20 @@ const cartSchema = new mongoose.Schema(
     ],
     totalPrice: {
       type: Number,
-      required: true,
     },
   },
   {
     timestamps: true,
   },
 );
+
+cartSchema.pre("save", async function () {
+  await this.populate("books.book", "title price");
+
+  this.totalPrice = this.books.reduce((total, item) => {
+    return total + item.book.price * item.quantity;
+  }, 0);
+});
 
 const Cart = mongoose.model("Cart", cartSchema);
 

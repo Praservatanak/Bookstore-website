@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import mongoosePaginate from "mongoose-paginate-v2";
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -46,6 +47,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+userSchema.plugin(mongoosePaginate);
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const hashPassword = await bcrypt.hash(this.password, 12);

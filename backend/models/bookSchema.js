@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const bookSchema = new mongoose.Schema(
   {
@@ -72,5 +73,16 @@ const bookSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+bookSchema.plugin(mongoosePaginate);
+bookSchema.pre("save", function () {
+  if (!this.isModified("title")) return;
+
+  this.slug = this.title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+});
 
 export default mongoose.model("Book", bookSchema);

@@ -10,15 +10,20 @@ import { notFound } from "./middlewares/notFound.js";
 import authRoute from "./routers/authRoute.js";
 import adminRoute from "./routers/adminRoute.js";
 import userRoute from "./routers/userRoute.js";
+import bookRoute from "./routers/bookRoute.js";
+import cartRoute from "./routers/cartRoute.js";
 const app = express();
 connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 app.use("/api/auth", authRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/user", userRoute);
+app.use("/api/book", bookRoute);
+app.use("/api/cart", cartRoute);
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -26,6 +31,7 @@ app.get("/health", (req, res) => {
     message: "Server is healthy",
   });
 });
+
 app.use(notFound);
 app.use(errorHandler);
 
